@@ -12,5 +12,5 @@ class Transform(Component):
     scale: tm.vec3
 
 
-class Renderer(Component):
+class Renderable(Component):
     pass

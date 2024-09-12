@@ -40,7 +40,7 @@ class GameSystems(Behaviour):
 
 class ExampleSystem(Behaviour):
     def update(self, entity_manager, delta_time):
-        print("Example System updating." + str(delta_time))
+        #print("Example System updating." + str(delta_time))
         pass
 
     def start(self, entity_manager):

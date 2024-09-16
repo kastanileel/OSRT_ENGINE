@@ -10,7 +10,7 @@ class Window:
         self.bufferUpdated = False
         self.title = title
         self.buffer = ti.Vector.field(3, ti.f32, shape=(width, height))
-        self.gui = ti.GUI("Example", (width, height), fast_gui=True)
+        self.gui = ti.GUI(self.title, (width, height), fast_gui=True)
         self.gui.set_image(self.buffer)
 
     def update(self):

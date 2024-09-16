@@ -16,7 +16,7 @@ from OSRTCore.utils.Window import Window
 ti.init(arch=ti.gpu)
 gameSystems = GameSystems()
 manager = EntityManager()
-window = Window("Example", 640, 480)
+window = Window("OSRT_ENGINE v0.1", 640, 480)
 image = ti.Vector.field(3, ti.f32, shape=(640, 480))
 parsed_obj = WavefrontOBJParser.parse("./assets/teapot.obj")
 num_triangles = 6320

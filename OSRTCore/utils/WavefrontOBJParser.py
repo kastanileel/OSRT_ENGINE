@@ -20,11 +20,18 @@ class WavefrontOBJParser:
         for line in lines:
             # remove whitespaces
             line.strip()
-            if line.startswith("v"):
+            if line.startswith("v "):
                 elements = line.split()
                 vertices.append(tm.vec3(float(elements[1]), float(elements[2]), float(elements[3])))
             elif line.startswith("f"):
                 elements = line.split()
+
+                # TODO: cleanup, this is for debugging/testing only:
+                if "/" in elements[1]:
+                    elements[1] = elements[1].strip("/")[0]
+                    elements[2] = elements[2].strip("/")[0]
+                    elements[3] = elements[3].strip("/")[0]
+
                 triangles.append(Triangle(vertices[int(elements[1])-1],
                                           vertices[int(elements[2])-1],
                                           vertices[int(elements[3])-1]))

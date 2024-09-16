@@ -53,7 +53,7 @@ class Triangle(Primitive):
         if t <= 0.0:
             did_hit = False
 
-        return did_hit
+        return did_hit, t
 
 
 @ti.dataclass

@@ -56,18 +56,16 @@ def test_kernel2(t: float):
     for i, j in image:
         u = i / 640
         v = j / 480
-
         u = u * 2.0 - 1.0
         v = v * 2.0 - 1.0
-
         u *= 20
         v *= 20
         ray = Ray()
-        ray.origin = tm.vec3(u, v, -5)
+        ray.origin = tm.vec3(u, v, -20)
         ray.direction = tm.vec3(0, 0, 1)
         image[i, j] = 0.0
         for triangle in range(num_triangles):
-            did_hit = mesh[triangle].intersect(ray)
+            did_hit, ta = mesh[triangle].intersect(ray)
             if did_hit:
                 image[i, j] = 1.0
 

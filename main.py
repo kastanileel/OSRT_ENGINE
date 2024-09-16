@@ -8,6 +8,7 @@ from itertools import product
 import taichi as ti
 import taichi.math as tm
 
+from OSRTCore.utils.WavefrontOBJParser import WavefrontOBJParser
 from OSRTCore.utils.Window import Window
 
 ti.init(arch=ti.gpu)
@@ -42,6 +43,11 @@ def test_kernel(t: float):
         image[i, j] = 1 - iterations * 0.02
 
 
+@ti.kernel
+def test_kernel_2(t: float):
+    pass
+
+
 if __name__ == "__main__":
 
     initEngine()
@@ -49,6 +55,9 @@ if __name__ == "__main__":
     system_time_last = time.time_ns()
     # Game Loop
     count = 0
+
+    # TODO: Remove this test stuff:
+    triangles = WavefrontOBJParser.parse("./assets/teapot.obj")
     while True:
         delta_time = (time.time_ns() - system_time_last) / 1e9
         system_time_last = time.time_ns()

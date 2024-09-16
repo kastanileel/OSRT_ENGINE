@@ -1,3 +1,9 @@
+import taichi as ti
+import taichi.math as tm
+
+from OSRTCore.raytracer.primitives import Triangle
+
+
 class WavefrontOBJParser:
     """Wavefront OBJ parser
 
@@ -6,4 +12,20 @@ class WavefrontOBJParser:
 
     @staticmethod
     def parse(file_path):
-        pass
+        obj = open(file_path)
+        lines = obj.readlines()
+
+        vertices = []
+        triangles = []
+        for line in lines:
+            # remove whitespaces
+            line.strip()
+            if line.startswith("v"):
+                elements = line.split()
+                vertices.append(tm.vec3(float(elements[1]), float(elements[2]), float(elements[3])))
+            elif line.startswith("f"):
+                elements = line.split()
+                triangles.append(Triangle(vertices[int(elements[1])-1],
+                                          vertices[int(elements[2])-1],
+                                          vertices[int(elements[3])-1]))
+        return triangles

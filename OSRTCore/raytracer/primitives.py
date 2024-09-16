@@ -28,32 +28,32 @@ class Triangle(Primitive):
         :param ray:
         :return: did_intersect boolean, hitrecord
         """
-
+        did_hit = True
         edge1 = self.v1 - self.v0
         edge2 = self.v2 - self.v0
         ray_cross_edge2 = tm.cross(ray.direction, edge2)
+        det = tm.dot(edge1, ray_cross_edge2)
 
-        det = tm.dot(ray.direction, ray_cross_edge2)
         if det == 0.0:
-            return False
+            did_hit = False
 
-        inv_det = 1.0/det
-        s = ray.origin-self.v0
-        u = inv_det*tm.dot(s, ray_cross_edge2)
+        inv_det = 1.0 / det
+        s = ray.origin - self.v0
+        u = inv_det * tm.dot(s, ray_cross_edge2)
         if u < 0.0 or u > 1.0:
-            return False
+            did_hit = False
 
         s_cross_edge1 = tm.cross(s, edge1)
-        v = inv_det*tm.dot(ray.direction, s_cross_edge1)
+        v = inv_det * tm.dot(ray.direction, s_cross_edge1)
         if v < 0.0 or v > 1.0:
-            return False
+            did_hit = False
 
-        t = inv_det*tm.dot(edge2, s_cross_edge1)
+        t = inv_det * tm.dot(edge2, s_cross_edge1)
 
         if t <= 0.0:
-            return False
+            did_hit = False
 
-        return True
+        return did_hit
 
 
 @ti.dataclass

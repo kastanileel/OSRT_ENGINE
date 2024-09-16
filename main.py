@@ -8,6 +8,8 @@ from itertools import product
 import taichi as ti
 import taichi.math as tm
 
+from OSRTCore.raytracer.primitives import Triangle
+from OSRTCore.raytracer.rtBasics import Ray
 from OSRTCore.utils.WavefrontOBJParser import WavefrontOBJParser
 from OSRTCore.utils.Window import Window
 
@@ -16,12 +18,18 @@ gameSystems = GameSystems()
 manager = EntityManager()
 window = Window("Example", 640, 480)
 image = ti.Vector.field(3, ti.f32, shape=(640, 480))
+parsed_obj = WavefrontOBJParser.parse("./assets/teapot.obj")
+num_triangles = 6320
+mesh = Triangle.field(shape=num_triangles)
 
 
 def initEngine():
     # Initialize the engine
     for system in game_system_registry:
         gameSystems.addSystem(system())
+
+    for i in range(num_triangles):
+        mesh[i] = parsed_obj[i]
 
     pass
 
@@ -44,8 +52,25 @@ def test_kernel(t: float):
 
 
 @ti.kernel
-def test_kernel_2(t: float):
-    pass
+def test_kernel2(t: float):
+    for i, j in image:
+        u = i / 640
+        v = j / 480
+
+        u = u * 2.0 - 1.0
+        v = v * 2.0 - 1.0
+
+        u *= 20
+        v *= 20
+        ray = Ray()
+        ray.origin = tm.vec3(u, v, -5)
+        ray.direction = tm.vec3(0, 0, 1)
+        image[i, j] = 0.0
+        for triangle in range(num_triangles):
+            did_hit = mesh[triangle].intersect(ray)
+            if did_hit:
+                image[i, j] = 1.0
+
 
 
 if __name__ == "__main__":
@@ -56,14 +81,12 @@ if __name__ == "__main__":
     # Game Loop
     count = 0
 
-    # TODO: Remove this test stuff:
-    triangles = WavefrontOBJParser.parse("./assets/teapot.obj")
     while True:
         delta_time = (time.time_ns() - system_time_last) / 1e9
         system_time_last = time.time_ns()
 
         gameSystems.update(manager, delta_time)
-        test_kernel(count * 0.03)
+        test_kernel2(count * 0.03)
         window.buffer = image
         window.update()
         count += 1

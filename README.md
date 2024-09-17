@@ -7,3 +7,10 @@
 > Next:
 > - BVH
 > - better parsing
+
+## 17.09.2024
+=> Started with BVH stuff
+
+> Next:
+> - BVH
+> - better parsing

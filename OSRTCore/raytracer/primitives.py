@@ -1,11 +1,73 @@
 import taichi as ti
 import taichi.math as tm
 
+""""
+BVH STUFF:
+    - AABB 
+"""
+
+
+@ti.dataclass
+class AABB:
+    intervals: ti.field(ti.f32, shape=(3, 2))
+
+    def __int__(self, p0: tm.vec3, p1: tm.vec3):
+        self.intervals[0, 0] = tm.min(p0.x, p1.x)
+        self.intervals[1, 0] = tm.min(p0.y, p1.y)
+        self.intervals[2, 0] = tm.min(p0.z, p1.z)
+
+        self.intervals[0, 1] = tm.max(p0.x, p1.x)
+        self.intervals[1, 1] = tm.max(p0.y, p1.y)
+        self.intervals[2, 1] = tm.max(p0.z, p1.z)
+
+    @ti.func
+    def intersect(self, ray):
+        # TODO: Add tmin and tmax to ray
+        t_min = -10000.0
+        t_max = 10000.0
+        for dimension in range(3):
+            inv = 1.0 / ray.direction[dimension]
+
+            t0 = (self.intervals[dimension, 0] - ray.direction[dimension]) * inv
+            t1 = (self.intervals[dimension, 1] - ray.direction[dimension]) * inv
+
+            if t0 < t1:
+                if t0 > t_min:
+                    t_min = t0
+                if t1 < t_max:
+                    t_max = t1
+            else:
+                if t1 > t_min:
+                    t_min = t1
+                if t0 < t_max:
+                    t_max = t0
+
+            if t_max <= t_min:
+                return False
+        return True
+
 
 class Primitive:
     @ti.func
     def intersect(self, ray):
         raise NotImplementedError
+
+    @ti.func
+    def bounding_box(self):
+        raise NotImplementedError
+
+
+@ti.dataclass
+class BVHNode(Primitive):
+    aabb: AABB
+
+    @ti.func
+    def intersect(self, ray):
+        pass
+
+    @ti.func
+    def bounding_box(self):
+        pass
 
 
 @ti.dataclass
